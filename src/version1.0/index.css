@@ -1,0 +1,49 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+.reditor,
+div[data-type="reditor"] {
+  width: 40vw;
+  height: 40vh;
+  margin: 0 auto;
+  border: 1px solid #d9d9d9;
+  border-radius: 5px;
+  touch-action: none;
+  overflow: hidden;
+}
+
+header ,
+div[data-type="ReditorHeader"] {
+  height: 40px;
+  line-height: 40px;
+  background: #ededed;
+  width: 100%;
+  border-bottom: 1px solid #d9d9d9;
+  box-shadow: 0 1px 5px #eee;  
+  line-height: 40px;
+  display: flex;
+  padding: 0 2px;;
+}
+
+header button {
+  height: 30px;
+  width: 40px;
+  border: none;
+  align-self: center;
+  margin: 0 2px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+div[type="reditor-body"] {
+  width: calc(40vw - 11px);
+  height: calc(40vh - 46.5px);
+  /*border: 1px solid #d9d9d9;*/
+  border-radius: 2px;
+  font-size: 14px;
+  padding: 2px 5px;
+  overflow: auto;
+}

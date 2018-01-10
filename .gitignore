@@ -1,0 +1,4 @@
+/dist
+node_modules
+.cache
+./src/version1.0
