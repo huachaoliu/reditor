@@ -4,8 +4,9 @@ import constants from '../constants.js';
 function Editor(actions) {
   this.element;
   this.actions = actions;
-  // this.init();
-  // return this.element;
+  this.uid = 'reditor_';
+  this.startOffset = 0;
+  this.endOffset = 0;
 }
 
 Editor.prototype.render = function (container = document.body) {
@@ -16,15 +17,15 @@ Editor.prototype.render = function (container = document.body) {
   const header = createNode('header', {
     class: 'reditor-toolbarl',
   });
-  // console.log(this.actions);
   for (let p in this.actions) {
-    const { icon, title, nodeName } = this.actions[p];
+    const { icon, title, result } = this.actions[p];
     const btn = createNode('button', {
       class: 'reditor-button'
     });
     btn.innerHTML = icon;
     btn.title = title;
-    btn.onclick = () => this.sendActions(nodeName);
+    // btn.onclick = () => this.sendActions(nodeName);
+    btn.onclick = () => this.sendActions(result);
     header.appendChild(btn);
   }
   this.body = createNode('div', {
@@ -32,37 +33,38 @@ Editor.prototype.render = function (container = document.body) {
     contentEditable: true
   });
 
-  // body.oninput = (e) => {
-  
-  // }
-
-  this.append(header, this.body);  
+  this.append(header, this.body);
 }
-
-const getSeletedText = () => {
+//这个得改到this下面去.缓存range scope
+Editor.prototype.getSeletedText = function () {
   let select;
   if (window.getSelection) {
-    const { endContainer: { data }, startOffset, endOffset } = window.getSelection().getRangeAt(0);
-    select = data ? data.substr(startOffset, endOffset) : '';
+    const selections = window.getSelection();
+    if (selections.type === 'Range') {
+      const range = selections.getRangeAt(0);
+      const { endContainer, startOffset, endOffset } = range;
+      const { textContent, previousElementSibling } = endContainer;
+      select = textContent.substr(startOffset + 1, endOffset);
+      this.previousElementSibling = previousElementSibling;
+      this.startOffset = startOffset;
+      this.endOffset = endOffset;
+    }
   }
   return select;
 }
 
-Editor.prototype.sendActions = function (nodeName) {
-  console.log(name);
-  const select = getSeletedText();
-  const result = createNode(nodeName);
-  console.log(this.body.children);
-  // result.innerHTML = select;
-
-  // this.body.appendChild(result);
-}
+/**
+ * @param {string} nodeName
+*/
+Editor.prototype.sendActions = result =>
+  result((command, value = null) =>
+    document.execCommand(command, false, value));
 
 Editor.prototype.append = function (...args) {
   args.map(arg => arg.nodeType && this.element.appendChild(arg));
 }
 
-export default function Reditor (container, blob, actions) {
+export default function Reditor(container, blob, actions) {
   this.actions = assign({}, assign(constants.currentActions, actions));
   this.editor = new Editor(this.actions);
   return this.editor;
